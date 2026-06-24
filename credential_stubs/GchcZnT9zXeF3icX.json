@@ -1,0 +1,15 @@
+{
+  "id": "GchcZnT9zXeF3icX",
+  "name": "OpenAI account Kayhut",
+  "type": "openAiApi",
+  "data": {
+    "apiKey": ""
+  },
+  "ownedBy": {
+    "type": "personal",
+    "projectId": "MWo4IWyLzGdVjJmA",
+    "projectName": "Ziv zivhadad1@gmail.com <zivhadad1@gmail.com>",
+    "personalEmail": "zivhadad1@gmail.com"
+  },
+  "isGlobal": false
+}

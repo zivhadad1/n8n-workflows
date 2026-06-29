@@ -1,9 +1,10 @@
 {
-  "id": "GchcZnT9zXeF3icX",
-  "name": "OpenAI account // Kayhut",
-  "type": "openAiApi",
+  "id": "RKb7Pg0FzDIHnOzi",
+  "name": "Google Calendar account // zivhadad1@gmail.com",
+  "type": "googleCalendarOAuth2Api",
   "data": {
-    "apiKey": ""
+    "clientId": "",
+    "clientSecret": ""
   },
   "ownedBy": {
     "type": "personal",

@@ -1,9 +1,11 @@
 {
-  "id": "GchcZnT9zXeF3icX",
-  "name": "OpenAI account // Kayhut",
-  "type": "openAiApi",
+  "id": "fMaBWinNKIwizK7I",
+  "name": "SSH Private Key account // root@oc-3",
+  "type": "sshPrivateKey",
   "data": {
-    "apiKey": ""
+    "host": "",
+    "username": "",
+    "privateKey": ""
   },
   "ownedBy": {
     "type": "personal",

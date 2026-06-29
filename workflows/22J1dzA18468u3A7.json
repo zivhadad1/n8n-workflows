@@ -1,0 +1,98 @@
+{
+  "id": "22J1dzA18468u3A7",
+  "name": "Telegram - Fetch Channel Messages + Attachments (sub-workflow)",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "channel"
+            },
+            {
+              "name": "sinceMessageId",
+              "type": "number"
+            },
+            {
+              "name": "limit",
+              "type": "number"
+            },
+            {
+              "name": "dateFrom"
+            },
+            {
+              "name": "dateTo"
+            }
+          ]
+        }
+      },
+      "id": "2b3aa28c-ff48-4c3b-923f-9000cdfea863",
+      "name": "When Called by Parent",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "import os\nimport base64\nimport asyncio\nfrom datetime import datetime, timezone\n\nfrom telethon import TelegramClient\nfrom telethon.sessions import StringSession\n\nparams = _input.first().json\nchannel = params[\"channel\"]\nsince_id = int(params.get(\"sinceMessageId\") or 0)\nlimit = int(params.get(\"limit\") or 50)\nlimit = max(1, min(limit, 100))\ndate_from = params.get(\"dateFrom\")\ndate_to = params.get(\"dateTo\")\nmax_bytes = int(os.environ.get(\"MAX_FILE_MB\", \"50\")) * 1024 * 1024\n\ndef parse_dt(v):\n    if not v:\n        return None\n    d = datetime.fromisoformat(str(v).replace(\"Z\", \"+00:00\"))\n    if d.tzinfo is None:\n        d = d.replace(tzinfo=timezone.utc)\n    return d\n\ndf = parse_dt(date_from)\ndt2 = parse_dt(date_to)\n\ndef media_meta(msg):\n    if not msg.media:\n        return None\n    f = msg.file\n    size = getattr(f, \"size\", None) if f else None\n    ext = (getattr(f, \"ext\", None) if f else None) or \"\"\n    name = (getattr(f, \"name\", None) if f else None)\n    if not name:\n        name = (str(msg.id) + ext) if ext else (str(msg.id) + \".bin\")\n    mime = (getattr(f, \"mime_type\", None) if f else None) or \"application/octet-stream\"\n    if msg.photo:\n        mtype = \"photo\"\n        if name.endswith(\".bin\"):\n            name = str(msg.id) + \".jpg\"\n        if mime == \"application/octet-stream\":\n            mime = \"image/jpeg\"\n    elif msg.video:\n        mtype = \"video\"\n    elif msg.voice:\n        mtype = \"voice\"\n    elif msg.audio:\n        mtype = \"audio\"\n    elif msg.document:\n        mtype = \"document\"\n    else:\n        mtype = \"other\"\n    return {\"mediaType\": mtype, \"fileName\": name, \"mimeType\": mime, \"size\": size}\n\nasync def main():\n    client = TelegramClient(\n        StringSession(os.environ[\"TELEGRAM_SESSION\"]),\n        int(os.environ[\"TELEGRAM_API_ID\"]),\n        os.environ[\"TELEGRAM_API_HASH\"],\n    )\n    await client.connect()\n    out = []\n    try:\n        if not await client.is_user_authorized():\n            raise Exception(\"Telegram session not authorized - regenerate the StringSession via the login script.\")\n        entity = await client.get_entity(channel)\n        async for msg in client.iter_messages(entity, limit=limit, min_id=since_id):\n            mdate = msg.date\n            if df and mdate < df:\n                continue\n            if dt2 and mdate > dt2:\n                continue\n            mi = media_meta(msg)\n            grouped = getattr(msg, \"grouped_id\", None)\n            j = {\n                \"messageId\": msg.id,\n                \"channel\": str(channel),\n                \"date\": mdate.isoformat(),\n                \"text\": msg.message or \"\",\n                \"hasMedia\": mi is not None,\n                \"mediaType\": mi[\"mediaType\"] if mi else \"none\",\n                \"groupedId\": str(grouped) if grouped else None,\n            }\n            item = {\"json\": j}\n            if mi:\n                size = mi[\"size\"] or 0\n                if size and size > max_bytes:\n                    j[\"attachmentSkipped\"] = True\n                    j[\"fileName\"] = mi[\"fileName\"]\n                    j[\"mimeType\"] = mi[\"mimeType\"]\n                    j[\"fileSize\"] = size\n                else:\n                    try:\n                        data = await client.download_media(msg, file=bytes)\n                        if data is None:\n                            j[\"attachmentSkipped\"] = True\n                        else:\n                            item[\"binary\"] = {\n                                \"attachment\": {\n                                    \"data\": base64.b64encode(data).decode(\"ascii\"),\n                                    \"fileName\": mi[\"fileName\"],\n                                    \"mimeType\": mi[\"mimeType\"],\n                                }\n                            }\n                            j[\"fileName\"] = mi[\"fileName\"]\n                            j[\"mimeType\"] = mi[\"mimeType\"]\n                            j[\"fileSize\"] = size or len(data)\n                    except Exception as e:\n                        j[\"attachmentSkipped\"] = True\n                        j[\"attachmentError\"] = str(e)\n            out.append(item)\n    finally:\n        await client.disconnect()\n    return out\n\nreturn asyncio.run(main())"
+      },
+      "id": "4c2fc764-7341-47b7-adf6-fcc6963b7de8",
+      "name": "Fetch Channel via Telethon",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Telegram User-API fetch (Telethon)\n\nRunner prerequisites:\n- telethon installed on the Python task runner\n- env vars: TELEGRAM_API_ID, TELEGRAM_API_HASH, TELEGRAM_SESSION (StringSession from one-time login)\n- optional: MAX_FILE_MB (default 50) - larger media is skipped (attachmentSkipped=true)\n\nInputs: channel, sinceMessageId (min_id, dedupe), limit (<=100/call), dateFrom, dateTo.\nAlbums: one item per media message, grouped via groupedId.\nStateless: parent owns sinceMessageId and re-invokes for backfill.",
+        "height": 360,
+        "width": 540,
+        "color": 4
+      },
+      "id": "7d7f0c26-14e8-4019-9285-4ac572987151",
+      "name": "Sticky Note 7b703a6c",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        -400
+      ]
+    }
+  ],
+  "connections": {
+    "When Called by Parent": {
+      "main": [
+        [
+          {
+            "node": "Fetch Channel via Telethon",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": true,
+    "binaryMode": "separate"
+  },
+  "triggerCount": 0,
+  "versionId": "ea1bd72d-da6e-42ac-ba27-c95c83546fef",
+  "owner": {
+    "type": "personal",
+    "projectId": "MWo4IWyLzGdVjJmA",
+    "projectName": "Ziv zivhadad1@gmail.com <zivhadad1@gmail.com>",
+    "personalEmail": "zivhadad1@gmail.com"
+  },
+  "parentFolderId": null,
+  "isArchived": false,
+  "nodeGroups": []
+}

@@ -1,0 +1,34 @@
+{
+  "id": "8DHIBN7tgDQit5oa",
+  "name": "SSH oc-3",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3db82d68-b8db-4145-8abf-9686ee7574ad",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "triggerCount": 0,
+  "versionId": "82f98e08-05a2-43ad-b291-dbbb4f5306cb",
+  "owner": {
+    "type": "personal",
+    "projectId": "MWo4IWyLzGdVjJmA",
+    "projectName": "Ziv zivhadad1@gmail.com <zivhadad1@gmail.com>",
+    "personalEmail": "zivhadad1@gmail.com"
+  },
+  "parentFolderId": null,
+  "isArchived": true,
+  "nodeGroups": []
+}

@@ -1,0 +1,160 @@
+{
+  "id": "nlnLKNI25WS3KFp1",
+  "name": "Testing",
+  "nodes": [
+    {
+      "parameters": {
+        "message": "={{ $json.stdout.replaceAll(\"\\n\", \"\\n\\n\") }}\n\n{{ $json.stderr.replaceAll(\"\\n\", \"\\n\\n\") }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1.3,
+      "position": [
+        336,
+        -368
+      ],
+      "id": "07936968-6270-4a75-b8cd-61414270369c",
+      "name": "Chat",
+      "webhookId": "7bf8497e-b6f2-4153-b376-390e92db3241"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseMode": "responseNodes"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -112,
+        -368
+      ],
+      "id": "76cb89b6-502a-4419-bca1-df36e36077c0",
+      "name": "When chat message received",
+      "webhookId": "3c79856a-f476-449c-8a7c-179d61bcf949"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "={{ $('When chat message received').item.json.chatInput }}"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        112,
+        -368
+      ],
+      "id": "5c96e3cf-042e-408a-9a12-3da392f6bc97",
+      "name": "Execute a command",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "fMaBWinNKIwizK7I",
+          "name": "SSH Private Key account // root@oc-3"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        688,
+        -512
+      ],
+      "id": "4e0925d7-2e2b-45b6-8861-09c013eeb060",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "options": {
+          "groupMessages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        -512
+      ],
+      "id": "9a7921fa-b4fa-4c8e-8790-fcecbc8b72e2",
+      "name": "Chat Memory Manager"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "PersonalAssistantMemory",
+        "contextWindowLength": 100
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        912,
+        -304
+      ],
+      "id": "1a3b7418-3f84-4594-b753-2374830cd077",
+      "name": "Simple Memory"
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Execute a command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a command": {
+      "main": [
+        [
+          {
+            "node": "Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Chat Memory Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Chat Memory Manager",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "triggerCount": 0,
+  "versionId": "11e7548e-4436-4610-9e03-ab0c17f9ec5d",
+  "owner": {
+    "type": "personal",
+    "projectId": "MWo4IWyLzGdVjJmA",
+    "projectName": "Ziv zivhadad1@gmail.com <zivhadad1@gmail.com>",
+    "personalEmail": "zivhadad1@gmail.com"
+  },
+  "parentFolderId": null,
+  "isArchived": false,
+  "nodeGroups": []
+}

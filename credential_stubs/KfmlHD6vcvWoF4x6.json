@@ -1,9 +1,10 @@
 {
-  "id": "GchcZnT9zXeF3icX",
-  "name": "OpenAI account // Kayhut",
-  "type": "openAiApi",
+  "id": "KfmlHD6vcvWoF4x6",
+  "name": "Gmail account // zivhadad1@gmail.com",
+  "type": "gmailOAuth2",
   "data": {
-    "apiKey": ""
+    "clientId": "",
+    "clientSecret": ""
   },
   "ownedBy": {
     "type": "personal",

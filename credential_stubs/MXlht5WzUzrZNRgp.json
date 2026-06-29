@@ -1,9 +1,12 @@
 {
-  "id": "GchcZnT9zXeF3icX",
-  "name": "OpenAI account // Kayhut",
-  "type": "openAiApi",
+  "id": "MXlht5WzUzrZNRgp",
+  "name": "MongoDB account // db",
+  "type": "mongoDb",
   "data": {
-    "apiKey": ""
+    "host": "",
+    "database": "",
+    "user": "",
+    "password": ""
   },
   "ownedBy": {
     "type": "personal",

@@ -1,9 +1,9 @@
 {
-  "id": "GchcZnT9zXeF3icX",
-  "name": "OpenAI account // Kayhut",
-  "type": "openAiApi",
+  "id": "ka1xh2oj1nahS5t7",
+  "name": "Telegram account // personal_assistant5_bot",
+  "type": "telegramApi",
   "data": {
-    "apiKey": ""
+    "accessToken": ""
   },
   "ownedBy": {
     "type": "personal",

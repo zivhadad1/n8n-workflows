@@ -1,0 +1,60 @@
+{
+  "id": "0YEhUo2LWY3zbZi3",
+  "name": "Fetch Telegram Channel (Python)",
+  "nodes": [
+    {
+      "id": "24f55c7b-6feb-4424-abc3-21e7b2c55d09",
+      "name": "Run Fetch",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "63ab102c-2f66-4df7-82b2-a928adfc166c",
+      "name": "Fetch Channel (Python)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        540,
+        300
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "pythonNative",
+        "pythonCode": "\nimport urllib.request\nfrom html.parser import HTMLParser\n\n# ===== EDIT THIS: the PUBLIC channel @username, without the @ =====\nCHANNEL = \"telegram\"\nLIMIT = 20\n# =================================================================\n\nVOID = {\"br\", \"img\", \"hr\", \"input\", \"meta\", \"link\", \"source\", \"wbr\"}\n\nclass TgParser(HTMLParser):\n    def __init__(self):\n        super().__init__()\n        self.messages = []\n        self.cur_post = None\n        self.cur_date = None\n        self.text_parts = []\n        self.capture_depth = 0\n\n    def _flush(self):\n        if self.cur_post is not None:\n            post = self.cur_post\n            mid = None\n            if \"/\" in post:\n                tail = post.rsplit(\"/\", 1)[1]\n                if tail.isdigit():\n                    mid = int(tail)\n            self.messages.append({\n                \"message_id\": mid,\n                \"channel\": post.rsplit(\"/\", 1)[0] if \"/\" in post else post,\n                \"text\": \"\".join(self.text_parts).strip(),\n                \"date\": self.cur_date,\n                \"url\": \"https://t.me/\" + post,\n            })\n        self.cur_post = None\n        self.cur_date = None\n        self.text_parts = []\n        self.capture_depth = 0\n\n    def handle_starttag(self, tag, attrs):\n        a = dict(attrs)\n        if \"data-post\" in a:\n            self._flush()\n            self.cur_post = a[\"data-post\"]\n        if tag == \"time\" and a.get(\"datetime\"):\n            self.cur_date = a[\"datetime\"]\n        if self.capture_depth > 0:\n            if tag == \"br\":\n                self.text_parts.append(\"\\n\")\n            if tag not in VOID:\n                self.capture_depth += 1\n        elif \"tgme_widget_message_text\" in a.get(\"class\", \"\"):\n            self.capture_depth = 1\n\n    def handle_startendtag(self, tag, attrs):\n        self.handle_starttag(tag, attrs)\n\n    def handle_endtag(self, tag):\n        if self.capture_depth > 0:\n            self.capture_depth -= 1\n\n    def handle_data(self, data):\n        if self.capture_depth > 0:\n            self.text_parts.append(data)\n\nurl = \"https://t.me/s/\" + CHANNEL\nreq = urllib.request.Request(url, headers={\"User-Agent\": \"Mozilla/5.0 (compatible; n8n/1.0)\"})\n\ntry:\n    with urllib.request.urlopen(req, timeout=20) as resp:\n        page = resp.read().decode(\"utf-8\", \"replace\")\nexcept Exception as e:\n    return [{\"error\": \"fetch_failed\", \"detail\": str(e), \"channel\": CHANNEL, \"hint\": \"Runner blocked outbound network. Use the HTTP Request node variant instead.\"}]\n\np = TgParser()\np.feed(page)\np._flush()\n\nmsgs = [m for m in p.messages if m[\"text\"]]\nmsgs = msgs[-LIMIT:][::-1]\n\nif not msgs:\n    return [{\"warning\": \"no_messages_parsed\", \"channel\": CHANNEL, \"html_len\": len(page), \"hint\": \"Channel may be private/nonexistent or markup changed.\"}]\n\nreturn msgs\n"
+      }
+    }
+  ],
+  "connections": {
+    "Run Fetch": {
+      "main": [
+        [
+          {
+            "node": "Fetch Channel (Python)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": true
+  },
+  "triggerCount": 0,
+  "versionId": "a54b77f1-3bf3-41c4-b982-6008ad50cab9",
+  "owner": {
+    "type": "personal",
+    "projectId": "MWo4IWyLzGdVjJmA",
+    "projectName": "Ziv zivhadad1@gmail.com <zivhadad1@gmail.com>",
+    "personalEmail": "zivhadad1@gmail.com"
+  },
+  "parentFolderId": null,
+  "isArchived": true,
+  "nodeGroups": []
+}

@@ -1,0 +1,26 @@
+{
+  "id": "JYH7bG3nCSABhL49",
+  "name": "barchart_opinion",
+  "columns": [
+    {
+      "id": "wUlHSKoNc9AIw5Cz",
+      "name": "symbol",
+      "type": "string",
+      "index": 0
+    },
+    {
+      "id": "HBjB9sa39z9AoiR5",
+      "name": "opinion",
+      "type": "string",
+      "index": 1
+    }
+  ],
+  "ownedBy": {
+    "type": "personal",
+    "projectId": "MWo4IWyLzGdVjJmA",
+    "projectName": "Ziv zivhadad1@gmail.com <zivhadad1@gmail.com>",
+    "personalEmail": "zivhadad1@gmail.com"
+  },
+  "createdAt": "2026-06-29T15:00:46.695Z",
+  "updatedAt": "2026-06-29T15:02:50.668Z"
+}

@@ -1,0 +1,234 @@
+{
+  "id": "BmQYge0uaGjdDpCq",
+  "name": "New Claude Remote Session",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f8838988-120d-4a6d-bdf4-a13449ebdd4e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "=tmux new-session -d -s {{ $('Code in Python').item.json.sid }} 'cd / && ~/.local/bin/claude'"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "ddeee7c0-1ba4-46df-a808-99c23f97b263",
+      "name": "Execute a command // new tmux session claude",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "fMaBWinNKIwizK7I",
+          "name": "SSH Private Key account // root@oc-3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "=tmux send-keys -t  {{ $('Code in Python').item.json.sid }} Enter"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        896,
+        0
+      ],
+      "id": "5a88f88a-2c1a-48a4-b64e-113b2bb5e015",
+      "name": "Execute a command // approve directory",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "fMaBWinNKIwizK7I",
+          "name": "SSH Private Key account // root@oc-3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "=tmux send-keys -t  {{ $('Code in Python').item.json.sid }} '/remote-control' Enter"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "d5b3a3d2-8481-4c7c-929b-f2541dd4db28",
+      "name": "Execute a command // enable remote control",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "fMaBWinNKIwizK7I",
+          "name": "SSH Private Key account // root@oc-3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "=tmux capture-pane -pt {{ $('Code in Python').item.json.sid }} | tail -50"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        1568,
+        0
+      ],
+      "id": "7cc3ff44-718a-4157-850d-44c8542382e0",
+      "name": "Execute a command // read output",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "fMaBWinNKIwizK7I",
+          "name": "SSH Private Key account // root@oc-3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "import random\nimport string\n\nreturn {\"sid\": ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "c696275f-6472-4f8e-8049-6cc37aa2d70b",
+      "name": "Code in Python"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        0
+      ],
+      "id": "5ec5bd7a-388c-4f44-9459-57644a4cb721",
+      "name": "Wait // claude starting",
+      "webhookId": "d9aa3b62-fb9b-494c-9c64-9489ccbb4c51"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "b2f2ff5c-4e92-43b2-acb6-7d3f05d21b9e",
+      "name": "Wait // remote control starting",
+      "webhookId": "ca347922-d5a3-40b3-93df-0805161e460c"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in Python",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a command // new tmux session claude": {
+      "main": [
+        [
+          {
+            "node": "Wait // claude starting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a command // approve directory": {
+      "main": [
+        [
+          {
+            "node": "Execute a command // enable remote control",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a command // enable remote control": {
+      "main": [
+        [
+          {
+            "node": "Wait // remote control starting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python": {
+      "main": [
+        [
+          {
+            "node": "Execute a command // new tmux session claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait // claude starting": {
+      "main": [
+        [
+          {
+            "node": "Execute a command // approve directory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait // remote control starting": {
+      "main": [
+        [
+          {
+            "node": "Execute a command // read output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "triggerCount": 0,
+  "versionId": "a2a640ff-55d9-4c06-b04b-9bbb62ec7e9a",
+  "owner": {
+    "type": "personal",
+    "projectId": "MWo4IWyLzGdVjJmA",
+    "projectName": "Ziv zivhadad1@gmail.com <zivhadad1@gmail.com>",
+    "personalEmail": "zivhadad1@gmail.com"
+  },
+  "parentFolderId": null,
+  "isArchived": false,
+  "nodeGroups": []
+}

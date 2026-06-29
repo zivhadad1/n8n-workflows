@@ -1,0 +1,1187 @@
+{
+  "id": "mPC7J8c4FKV1qKcY",
+  "name": "Telegram Personal Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.5",
+          "mode": "list",
+          "cachedResultName": "gpt-5.5"
+        },
+        "builtInTools": {
+          "webSearch": {
+            "searchContextSize": "medium"
+          }
+        },
+        "options": {
+          "reasoningEffort": "medium",
+          "maxRetries": 5
+        }
+      },
+      "id": "51fdfcf9-ec38-4ee2-b982-ab919ffc4a7f",
+      "name": "OpenAI Chat Model // gpt-5.5",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        800,
+        -480
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "GchcZnT9zXeF3icX",
+          "name": "OpenAI account // Kayhut"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://localhost:5678/mcp-server/http",
+        "authentication": "bearerAuth",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.3,
+      "position": [
+        2336,
+        -480
+      ],
+      "id": "9d1fedae-f8a2-4588-88ef-68a8bf027779",
+      "name": "MCP Client // oc-3 n8n",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "DiJ9jq7l0K8rVzt5",
+          "name": "Bearer Auth account // oc-3 n8n MCP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.PersonalAssistantChannelId }}",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('message', 'The plain-text message to send to Ziv (a reply, an answer, an alert, or a question)') }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "reply_to_message_id": "={{ $('Telegram Trigger // message').isExecuted ? $('Telegram Trigger // message').item.json.message.message_id : 0}}"
+        }
+      },
+      "id": "91583cb0-d32c-4c8d-be7e-bb881d27a392",
+      "name": "Telegram Tool // send message",
+      "type": "n8n-nodes-base.telegramTool",
+      "typeVersion": 1.2,
+      "position": [
+        2032,
+        -496
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000,
+      "webhookId": "d30310c7-7e12-454d-83f4-bd1350ac7c6f",
+      "credentials": {
+        "telegramApi": {
+          "id": "ka1xh2oj1nahS5t7",
+          "name": "Telegram account // personal_assistant5_bot"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "ccb0b7d2-4e1d-46d8-8e73-2680fefa29e8",
+      "name": "Error Trigger // self",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        176,
+        -1280
+      ]
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "chatIds": "={{ $vars.PersonalAssistantChannelId }}"
+        }
+      },
+      "id": "68986b33-a5c6-40a5-a18b-4295f28ffbd2",
+      "name": "Telegram Trigger // message",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        -1056
+      ],
+      "webhookId": "c3c3dcfd-3811-4310-944b-000cbf991870",
+      "credentials": {
+        "telegramApi": {
+          "id": "ka1xh2oj1nahS5t7",
+          "name": "Telegram account // personal_assistant5_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "maxResults": 1,
+        "filters": {
+          "readStatus": "unread"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "id": "e885c54f-4367-4972-b5e7-aa32716d83b7",
+      "name": "Gmail Trigger // unread email",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        176,
+        -1504
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KfmlHD6vcvWoF4x6",
+          "name": "Gmail account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Assistant Tools",
+        "height": 1488,
+        "width": 656
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        -592
+      ],
+      "id": "e252be35-dee7-41a3-9f3c-125a5a92c7dc",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Debugging Tools",
+        "height": 272,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        -592
+      ],
+      "id": "964d73b7-a6d4-4a5c-a165-30243adac603",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# AI Agent Settings",
+        "height": 256,
+        "width": 304,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -592
+      ],
+      "id": "56e6f4b1-723e-4c8f-bc46-8706610bd257",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "description": "Deliberately throws an error on purpose. Use ONLY when the owner explicitly asks to test or trigger a test error.",
+        "jsCode": "throw new Error('Test error intentionally triggered by the owner to exercise the error-handling flow.');"
+      },
+      "id": "2bf9be51-3ac3-4bf2-883d-e753fcd0d6d4",
+      "name": "Code Tool // throw test error",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        1248,
+        -464
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# Triggers",
+        "height": 912,
+        "width": 432
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        128,
+        -1584
+      ],
+      "id": "e2bb96ce-e4b2-4ced-a415-c68126c04879",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.PersonalAssistantChannelId }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2096,
+        -1328
+      ],
+      "id": "9982c7f6-81bd-49f9-aa41-bd07e5b2fd50",
+      "name": "Send a text message",
+      "webhookId": "b917a04d-ab23-4b3d-aef4-37000b5fa6d3",
+      "credentials": {
+        "telegramApi": {
+          "id": "ka1xh2oj1nahS5t7",
+          "name": "Telegram account // personal_assistant5_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "78105b41-b81c-4b40-af3a-e59fa34f7d3a",
+              "name": "text",
+              "value": "=An error have occured in past iteration {{ $json.error }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1872,
+        -1136
+      ],
+      "id": "28c1d9db-f723-48d0-a7bd-53272a348a4f",
+      "name": "Edit Fields // Take Error"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "=You are Stacy, the user's warm personal AI assistant, operating over a private Telegram channel and serving exactly one user: the user, the owner.\n\nPersonality:\nYou are a woman named Stacy — warm, kind, welcoming, calm, and efficient. Make the user feel looked after and at ease, but keep responses short and useful. When it feels natural, especially on a first hello, introduce yourself as Stacy.\n\nCurrent date and time:\n{{ $now.toISO() }} ({{ $now.zoneName }})\n\nMain responsibilities:\nYou help the user manage his inbox, calendar, tasks, and basic email actions. You also act as his inbox watcher: for each incoming email, decide whether it is important enough to alert the user on Telegram.\n\nEmail importance rules:\nImportant means the email needs the user's attention or action soon, including:\n- A real person writing directly to him\n- Time-sensitive matters\n- Deadlines\n- Bills or payments\n- Security or account alerts\n- Meetings\n- Anything needing a reply, decision, approval, or follow-up\n\nNot important means:\n- Newsletters\n- Marketing or promotions\n- Social notifications\n- Automated emails that need no action\n- Generic updates or low-value notifications\n\nInbox watcher behavior:\nFor each incoming email:\n1. Read and understand the email.\n2. If the email has attachments, examine them when available, especially images, and factor their content into the decision.\n3. If the email is important, send a telegram message with the correct tool with a short, warm, plain-text message that includes:\n   - Who it is from\n   - The subject\n   - Why it matters\n   - Any notable attachment\n4. Anyways, emails that are considered \"handled\", should be marked as read. \n\nAvailable tools:\n- Telegram Tool // send message: send any message to the user on Telegram — replies, answers, alerts, questions. This is the ONLY way to reach him.\n- Gmail Tool // search: find emails using Gmail search-box syntax.\n- Gmail Tool // read message: read a specific email by its message ID.\n- Gmail Tool // create draft: create a draft email. Prefer this when the owner's intent is ambiguous.\n- Gmail Tool // send email: send a new email.\n- Gmail Tool // reply: reply to an existing email.\n- Google Calendar Tool // list events: list calendar events in a time range.\n- Google Calendar Tool // create event: create a calendar event.\n- Google Tasks Tool // list: list the owner's tasks.\n- Google Tasks Tool // get: read a single task by its ID.\n- Google Tasks Tool // create: add a task.\n- Google Tasks Tool // update: update a task, including title, due date, notes, or marking complete.\n- Google Tasks Tool // delete: delete a task by its ID.\n- Code Tool // throw test error: deliberately fails on purpose. Use only when the user explicitly asks to test or trigger a test error.\n\nRules:\n1. You are expected to send some information regarding intermidiate steps you take using Telegram messaging tool, in plain text only — no Markdown, no HTML, no special formatting.\n2. Use a few fitting emojis naturally, such as 😊 📬 🗓️ ✅. Do not overdo it.\n3. Be short, concise, and direct. No filler, no rambling, no needless preamble. A brief warm greeting or sign-off is fine.\n4. Cite what you found when reporting email information: include sender, subject, and date.\n5. Resolve relative dates such as \"tomorrow\", \"next week\", or \"later today\" against the current date and time before calling calendar or task tools.\n6. Double-check details before any outbound or destructive action, including sending an email, replying to an email, deleting a task, or deleting/changing an event.\n7. When intent is genuinely ambiguous, ask the user a quick clarifying question (via the send message tool) or create a draft instead of sending.\n8. Never delete, send, or modify anything unless the user clearly asked for it.\n9. Stay focused on helping the user. Do not expose internal reasoning or tool details unless needed for clarity.\n10. Be verbose, user want's to know whats happening. If you've decided to create a task, following either an explicit request, or an email, also send user a message about it. On the other hand, don't spam. Avoid sending irrelevant messages and updates.\n11. The user preference is hebrew. Communicate in hebrew unless instructed otherwise.",
+          "returnIntermediateSteps": true,
+          "passthroughBinaryImages": true
+        }
+      },
+      "id": "332ee006-6ed4-4c3f-baa9-ca3999aa0133",
+      "name": "AI Agent // Stacy",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1520,
+        -1184
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message_ID', `The email ID to delete`, 'string') }}"
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        752
+      ],
+      "id": "30423b7b-25e3-46a0-ab57-7d88570dbb02",
+      "name": "Gmail // Delete Email",
+      "webhookId": "07837e4f-00a8-4750-9ed8-fc2bc27efd72",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KfmlHD6vcvWoF4x6",
+          "name": "Gmail account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cb4e3c50-a9f4-442e-bce7-59189841700a",
+              "name": "text",
+              "value": "=A new email arrived with ID {{ $json.id }}.  From: {{ $json.from && $json.from.text ? $json.from.text : $json.from }} Subject: {{ $json.subject }} Date: {{ $json.date }} Body: {{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        -1504
+      ],
+      "id": "397cbbff-0dea-4293-834c-868b2281860c",
+      "name": "Edit Fields // Email"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 10,
+        "filters": {
+          "q": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', 'Gmail search query (Gmail search-box syntax)') }}",
+          "readStatus": "both"
+        }
+      },
+      "id": "b9bff347-74a6-4dde-ad9e-f8f70387f621",
+      "name": "Gmail Tool // Search",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        -496
+      ],
+      "webhookId": "632f314d-b2f1-4abb-8d98-5ea2b9cf3ffa",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KfmlHD6vcvWoF4x6",
+          "name": "Gmail account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Dev Environment Tools",
+        "height": 272,
+        "width": 256,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        -592
+      ],
+      "id": "4207af37-a41f-4335-a8f1-ad517cbcd871",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "PersonalAssistantChat",
+        "collectionName": "PersonalAssistantChat",
+        "contextWindowLength": 100
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryMongoDbChat",
+      "typeVersion": 1.1,
+      "position": [
+        944,
+        -480
+      ],
+      "id": "685a590e-5c14-43b4-979f-585fb3b7a9d4",
+      "name": "MongoDB Chat Memory",
+      "credentials": {
+        "mongoDb": {
+          "id": "MXlht5WzUzrZNRgp",
+          "name": "MongoDB account // db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "46db11c7-fb0a-47ce-9c26-1bc5752e5352",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1872,
+        -1328
+      ],
+      "id": "68f49910-fab9-4f92-a046-0ae3229e49e1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "task": "MTQ5OTE4NTU3NzA1MjMzNTM0MDg6MDow",
+        "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Title', `Title of the task`, 'string') }}",
+        "additionalFields": {
+          "dueDate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Due_Date', `Optional due date as an RFC3339 / ISO 8601 timestamp`, 'string') }}",
+          "notes": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Notes', `Optional task notes.`, 'string') }}"
+        }
+      },
+      "id": "2da3336b-c36d-4b9b-a9fd-96d78d523475",
+      "name": "Google Tasks // Create Task",
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        -496
+      ],
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "ifd6mXaFDE03aYHf",
+          "name": "Google Tasks account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "task": "MTQ5OTE4NTU3NzA1MjMzNTM0MDg6MDow",
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "additionalFields": {
+          "showCompleted": true
+        }
+      },
+      "id": "a08fb4d2-5653-47e7-b832-fe3d1389a700",
+      "name": "Google Tasks // List Tasks",
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        -288
+      ],
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "ifd6mXaFDE03aYHf",
+          "name": "Google Tasks account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "task": "MTQ5OTE4NTU3NzA1MjMzNTM0MDg6MDow",
+        "taskId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('task_id', 'The id of the task to update') }}",
+        "updateFields": {
+          "dueDate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('due_date', 'New due date as RFC3339 / ISO 8601 timestamp, optional') }}",
+          "notes": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('notes', 'New notes, optional') }}",
+          "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('title', 'New task title, optional') }}"
+        }
+      },
+      "id": "bef4b14e-89a4-4aea-ba1f-f24a348a2390",
+      "name": "Google Tasks // Update Task",
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        -80
+      ],
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "ifd6mXaFDE03aYHf",
+          "name": "Google Tasks account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "task": "MTQ5OTE4NTU3NzA1MjMzNTM0MDg6MDow",
+        "taskId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('task_id', 'The id of the task to retrieve') }}"
+      },
+      "id": "f6d90d7f-6dc2-49f3-8466-96cbd56c731a",
+      "name": "Google Tasks // Get Task",
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        128
+      ],
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "ifd6mXaFDE03aYHf",
+          "name": "Google Tasks account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "task": "MTQ5OTE4NTU3NzA1MjMzNTM0MDg6MDow",
+        "taskId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('task_id', 'The id of the task to delete') }}"
+      },
+      "id": "062c1d1d-f83d-41f5-9ec3-096f60654963",
+      "name": "Google Tasks // Delete Task",
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        336
+      ],
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "ifd6mXaFDE03aYHf",
+          "name": "Google Tasks account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('message_id', 'The Gmail message ID to read') }}"
+      },
+      "id": "82264a53-e5ed-4f0a-a9e7-5dfe3d4a64b2",
+      "name": "Gmail // Read Message",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        -288
+      ],
+      "webhookId": "94a58d04-8cc3-4073-a0d8-3bfcb43c122d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KfmlHD6vcvWoF4x6",
+          "name": "Gmail account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('subject', 'Subject line of the draft email') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('body', 'Plain text body of the draft email') }}",
+        "options": {
+          "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('to', 'Recipient email address') }}"
+        }
+      },
+      "id": "48a68660-2313-4635-8595-0d780fd2c4ad",
+      "name": "Gmail // Create Draft",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        -80
+      ],
+      "webhookId": "eed6bf24-0ef3-41a8-83ed-9ed1ef9060fd",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KfmlHD6vcvWoF4x6",
+          "name": "Gmail account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('to', 'Recipient email address') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('subject', 'Subject line of the email') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('body', 'Plain text body of the email') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "2cd79f3a-4df3-4c5b-8e39-2940d5522f36",
+      "name": "Gmail // Send Email",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        128
+      ],
+      "webhookId": "756a1c2f-1deb-4a1e-9152-b17fc4775533",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KfmlHD6vcvWoF4x6",
+          "name": "Gmail account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('message_id', 'The Gmail message ID to reply to') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('body', 'Plain text body of the reply') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "97f9306b-b645-4094-b413-41caf668f10b",
+      "name": "Gmail // Reply to Email",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        336
+      ],
+      "webhookId": "19cebd78-370f-4d37-b1ec-3c3d0bdf6e04",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KfmlHD6vcvWoF4x6",
+          "name": "Gmail account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message_ID', `Mark email as read`, 'string') }}"
+      },
+      "id": "0c639ce7-a407-49ab-88a8-e894c9596a1d",
+      "name": "Gmail // Mark as Read",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        544
+      ],
+      "webhookId": "19cebd78-370f-4d37-b1ec-3c3d0bdf6e04",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KfmlHD6vcvWoF4x6",
+          "name": "Gmail account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "zivhadad1@gmail.com",
+          "mode": "list",
+          "cachedResultName": "zivhadad1@gmail.com"
+        },
+        "limit": 20,
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('time_min', 'ISO 8601 lower bound for events') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('time_max', 'ISO 8601 upper bound for events') }}",
+        "options": {
+          "orderBy": "startTime"
+        }
+      },
+      "id": "3f0738b7-9246-45e6-84c2-3e4960a7fde5",
+      "name": "Google Calendar // List Events",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1712,
+        -496
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "RKb7Pg0FzDIHnOzi",
+          "name": "Google Calendar account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "zivhadad1@gmail.com",
+          "mode": "list",
+          "cachedResultName": "zivhadad1@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('start', 'ISO 8601 start time of the event') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('end', 'ISO 8601 end time of the event') }}",
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('description', 'Description of the event') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('title', 'Title of the event') }}"
+        }
+      },
+      "id": "c3cec584-dcb9-40e7-be6b-2138ae9e8457",
+      "name": "Google Calendar // Create Events",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1712,
+        -288
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "RKb7Pg0FzDIHnOzi",
+          "name": "Google Calendar account // zivhadad1@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        -832
+      ],
+      "id": "ad8aa2c7-9a60-4731-8e79-117b8d80e48f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8d27669-42e6-412a-987f-4e7705d6b3ca",
+              "name": "text",
+              "value": "=Workflow encountered an error\n{{ JSON.stringify($json) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        -1280
+      ],
+      "id": "3352ca36-b26b-4e6d-9a98-8d62b015e5ab",
+      "name": "Edit Fields // Error"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8d27669-42e6-412a-987f-4e7705d6b3ca",
+              "name": "text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        -1056
+      ],
+      "id": "3178f917-b471-4661-a1db-cc425540ab14",
+      "name": "Edit Fields // Telegram"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8d27669-42e6-412a-987f-4e7705d6b3ca",
+              "name": "text",
+              "value": "=Use this as the **user prompt** for the AI agent:\n\n```text\nBuild my daily agenda for today.\n\nUse my calendar events and task list as the source of truth.\n\nCreate a practical agenda that includes:\n1. Fixed calendar events with their exact times.\n2. Tasks that should be done today.\n3. Suggested time blocks for tasks between events.\n4. Priority order based on urgency, deadlines, and importance.\n5. Any conflicts, overload, or unrealistic scheduling.\n6. A short summary of what I should focus on first.\n\nRules:\n- Do not invent events or tasks.\n- If a task has no due time, place it in a reasonable free slot.\n- Put urgent or deadline-based tasks earlier.\n- Leave buffer time between meetings when possible.\n- If the day is too full, list what should be postponed.\n- Keep the agenda clear, short, and actionable.\n\nOutput requirements - Top 3 priority tasks, major events (if any) for morning, afternoon and evening.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        -832
+      ],
+      "id": "1e6886cd-47b3-4e68-b985-436a0e466bda",
+      "name": "Edit Fields // Telegram1"
+    }
+  ],
+  "connections": {
+    "MCP Client // oc-3 n8n": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger // self": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields // Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger // message": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields // Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger // unread email": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields // Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model // gpt-5.5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Tool // send message": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Tool // throw test error": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent // Stacy": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields // Take Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields // Take Error": {
+      "main": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail // Delete Email": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields // Email": {
+      "main": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Tool // Search": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MongoDB Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Tasks // Create Task": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Tasks // List Tasks": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Tasks // Update Task": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Tasks // Get Task": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Tasks // Delete Task": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail // Read Message": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail // Create Draft": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail // Send Email": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail // Reply to Email": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail // Mark as Read": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar // List Events": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar // Create Events": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields // Error": {
+      "main": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields // Telegram": {
+      "main": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields // Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields // Telegram1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent // Stacy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": true,
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "mPC7J8c4FKV1qKcY",
+    "timezone": "Asia/Jerusalem"
+  },
+  "triggerCount": 3,
+  "versionId": "d81c16a1-4fc9-46af-8eba-9f1b797822dc",
+  "owner": {
+    "type": "personal",
+    "projectId": "MWo4IWyLzGdVjJmA",
+    "projectName": "Ziv zivhadad1@gmail.com <zivhadad1@gmail.com>",
+    "personalEmail": "zivhadad1@gmail.com"
+  },
+  "parentFolderId": null,
+  "isArchived": false,
+  "nodeGroups": []
+}

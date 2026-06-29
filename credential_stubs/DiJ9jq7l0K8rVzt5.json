@@ -1,9 +1,9 @@
 {
-  "id": "GchcZnT9zXeF3icX",
-  "name": "OpenAI account // Kayhut",
-  "type": "openAiApi",
+  "id": "DiJ9jq7l0K8rVzt5",
+  "name": "Bearer Auth account // oc-3 n8n MCP",
+  "type": "httpBearerAuth",
   "data": {
-    "apiKey": ""
+    "token": ""
   },
   "ownedBy": {
     "type": "personal",

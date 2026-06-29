@@ -1,9 +1,10 @@
 {
-  "id": "GchcZnT9zXeF3icX",
-  "name": "OpenAI account // Kayhut",
-  "type": "openAiApi",
+  "id": "ifd6mXaFDE03aYHf",
+  "name": "Google Tasks account // zivhadad1@gmail.com",
+  "type": "googleTasksOAuth2Api",
   "data": {
-    "apiKey": ""
+    "clientId": "",
+    "clientSecret": ""
   },
   "ownedBy": {
     "type": "personal",

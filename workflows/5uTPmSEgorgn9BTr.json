@@ -1,0 +1,71 @@
+{
+  "id": "5uTPmSEgorgn9BTr",
+  "name": "Send Enter Claude Code",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b15e1aef-6123-4daa-b64d-93f43f9c9336",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "tmux send-keys -t rs8joqtm Enter"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "9c87a80d-d1f8-4d02-b215-b2653edea805",
+      "name": "Execute a command // send enter",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "fMaBWinNKIwizK7I",
+          "name": "SSH Private Key account // root@oc-3"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute a command // send enter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a command // send enter": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "triggerCount": 0,
+  "versionId": "f143db87-bac0-4951-a56f-afd3ea623709",
+  "owner": {
+    "type": "personal",
+    "projectId": "MWo4IWyLzGdVjJmA",
+    "projectName": "Ziv zivhadad1@gmail.com <zivhadad1@gmail.com>",
+    "personalEmail": "zivhadad1@gmail.com"
+  },
+  "parentFolderId": null,
+  "isArchived": false,
+  "nodeGroups": []
+}
